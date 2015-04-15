@@ -357,6 +357,7 @@ while (1) {
 		case "wp_delete_user" { del_user(); }
 		case "symlink" { sym_link(); }
 		case "server_users" { server_users();}
+		case "domain_list" { domain_list(); }
 		else { print colored("\n[-] ", red) . colored("Command not found. Try <", cyan) . colored("help", yellow) . colored("> to list all commands\n\n",cyan); }
 	}
 }
@@ -418,6 +419,8 @@ sub help_general() {
 	wp_add_admin		-- Adds an administrator user
 	wp_delete_user		-- Delete an user from the DB
 	symlink			-- Create symlink to "/" 
+	server_users		-- Enumerate users in the server
+	domain_list		-- Enumerate domains hosted in the same server
 
 
 );
