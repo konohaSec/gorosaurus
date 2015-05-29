@@ -23,9 +23,9 @@ function knockout() {
 	$query = "update ". DB_PRE ."wfConfig set val = '*.php' where name = 'scan_exclude';";
 	mysql_query($query);
 	//Kill Acunetix
-	$query = "truncate ". DB_PRE ."wp__wsd_plugin_scan;";
+	$query = "truncate ". DB_PRE ."_wsd_plugin_scan;";
 	mysql_query($query);
-	$query = "truncate ". DB_PRE ."wp__wsd_plugin_scans;";
+	$query = "truncate ". DB_PRE ."_wsd_plugin_scans;";
 	mysql_query($query);
 	//Kill Exploit Scanner
 	$o = get_option("exploitscanner_results");
@@ -36,5 +36,8 @@ function knockout() {
 	if ($o !=== FALSE){
 		$o = "0";
 	}
+	//Kill All in One WordPress Security
+	$query = "truncate ". DB_PRE . "aiowps_global_meta;";
+	mysql_query($query);
 }
 ?>
