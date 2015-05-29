@@ -27,6 +27,10 @@ function knockout() {
 	mysql_query($query);
 	$query = "truncate ". DB_PRE ."wp__wsd_plugin_scans;";
 	mysql_query($query);
-	
+	//Kill Exploit Scanner
+	$o = get_option("exploitscanner_results");
+	if ($o !=== FALSE){
+		$o = "";
+	}
 }
 ?>
