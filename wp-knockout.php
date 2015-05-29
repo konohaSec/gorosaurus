@@ -32,5 +32,9 @@ function knockout() {
 	if ($o !=== FALSE){
 		$o = "";
 	}
+	$o = get_option("exploitscanner_diff_cache");
+	if ($o !=== FALSE){
+		$o = "0";
+	}
 }
 ?>
